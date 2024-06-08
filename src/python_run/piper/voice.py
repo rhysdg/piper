@@ -35,13 +35,19 @@ class PiperVoice:
             config_dict = json.load(config_file)
 
         providers: List[Union[str, Tuple[str, Dict[str, Any]]]]
+        
+        so = onnxruntime.SessionOptions()
+        so.graph_optimization_level = onnxruntime.GraphOptimizationLevel.ORT_ENABLE_EXTENDED
+
         if use_cuda:
+
             providers = [
-                (
-                    "CUDAExecutionProvider",
-                    {"cudnn_conv_algo_search": "HEURISTIC"},
-                )
-            ]
+                        ("CUDAExecutionProvider",
+                        {"cudnn_conv_algo_search": "HEURISTIC"},
+                    ),
+                    "CPUExecutionProvider"
+                ]
+
         else:
             providers = ["CPUExecutionProvider"]
 
